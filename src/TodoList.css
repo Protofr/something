@@ -622,3 +622,13 @@ button:hover + .tooltip, button:focus-visible + .tooltip {
 	color: #fff;
 }
 
+body {
+    /* ... other body styles ... */
+    min-height: 100vh; /* Ensure body is at least viewport height */
+    background-attachment: fixed; /* Fix the background image during scroll */
+}
+
+#root {
+    /* ... other #root styles ... */
+    min-height: 100vh; /* Ensure root container is at least viewport height */
+}
