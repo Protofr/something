@@ -92,17 +92,94 @@ function TodoList() {
             return;
         }
 
-        const { source, destination } = result;
+        const { source, destination, draggableId } = result;
 
-        if (source.droppableId !== destination.droppableId) {
-            return; // Handle moving between lists if you have multiple lists
+        // Check if the task moved within the same list or to another
+        if (source.droppableId === destination.droppableId) {
+            const reorderedList = Array.from(
+                source.droppableId === 'important-todos-list' ? importantTodos : defaultTodos
+            );
+
+            const [removed] = reorderedList.splice(source.index, 1);
+            reorderedList.splice(destination.index, 0, removed);
+
+            //Update todo list, taking into account importance
+            let allTodos = []
+            const newTodos = todos.map((todo) => {
+                //Remake new default task section, updating sort order from drop
+                if (source.droppableId === 'default-todos-list' && todo.id === draggableId && allTodos.length !== reorderedList.length) {
+                    return [...allTodos, ...reorderedList]
+                }
+
+                //Remake new importance task section, updating sort order from drop
+                if (source.droppableId === 'important-todos-list' && todo.id === draggableId && allTodos.length !== reorderedList.length) {
+                    return [...allTodos, ...reorderedList]
+                }
+
+                return todo
+            })
+
+            const newStateList =  newTodos
+            setTodos(newStateList);
+
+        } else {
+
+            const sourceIsImportant = source.droppableId === 'important-todos-list';
+            const destIsImportant = destination.droppableId === 'important-todos-list';
+
+            const sourceList = Array.from(sourceIsImportant ? importantTodos : defaultTodos);
+            const destList = Array.from(destIsImportant ? importantTodos : defaultTodos);
+
+            const [moved] = sourceList.splice(source.index, 1);
+            destList.splice(destination.index, 0, { ...moved, important: destIsImportant });
+             // Update the Todos - Check to remove importance task
+            let allTodos = []
+            const newTodos = todos.map((todo) => {
+
+                //If source item in default then make it default on move
+                if (sourceIsImportant && todo.id === draggableId) {
+                    allTodos.push({ ...todo, important: false })
+                }
+
+                //Add removed section
+                if (!destIsImportant) {
+                     allTodos.push({...todo, important: !sourceIsImportant})
+                }
+
+                //Final array items
+                return todo
+
+                /*if (!destIsImportant){
+                   {  importantTodos: [], defaultTodos }
+                    return todos
+                 todos.important: null === source.id, dest.importance !== important;   dest !== all
+                } dest !==important. sourceId   = draggable */
+            });
+
+          //todo   //check
+
+          console.log(`finalStateNew`, {... allTodos} , ...defaultTodos.id )//Check todos
+
+        setTodos( (prevState => ({//Change values of states in objects by combining multiple calls by spread
+            ...todos,  }) ))
+        /*   setTodos(); //Todo*/
+            const newStateDefault =  newTodos.concat({[source.id]: draggableId})
+               const removeStateImp =  { //prevState[targetList],
+                    ...sourceList, // = useState//Change from draggable ID TO import/drag, push and create default ID
+               };//console(State) to drag out default value
+
+
+
+/* Check const  mapOver from https://stackoverflow.com/questions/56923633/update-an-item-in-an-array-using-react-state
+ check  map list from array example stack overflow or github https://stackoverflow.com/questions/53518586/how-to-move-an-item-from-one-react-state-array-to-another */ //See https://www.npmjs.com/package/react-drag-reorder this? or just combine items back from drag id out (use 2 objects at map back)
+
+            setTodos( newStateDefault)//  newVal) //setState
+
+           ;
+
+
+          //[removed]; //Set Todo to dragg
         }
-
-        const reorderedTodos = Array.from(todos);
-        const [removed] = reorderedTodos.splice(source.index, 1);
-        reorderedTodos.splice(destination.index, 0, removed);
-
-        setTodos(reorderedTodos);
     };
 
 
