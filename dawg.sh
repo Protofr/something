@@ -245,7 +245,6 @@ EOF
   echo "checking for and purging unwanted packages..."
   purge_unwanted_packages_list
 
-  c_green; echo "free points run complete. estimated score: $score"; c_reset
 }
 
 require_root
@@ -254,3 +253,4 @@ echo "starting cyberpatriot_tool_final - focused on 'free points' and PAM harden
 free_points_mode
 echo "exiting. final estimated score: $score"
 exit 0
+
